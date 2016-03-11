@@ -1,0 +1,19 @@
+<Biml xmlns="http://schemas.varigence.com/biml.xsd">
+	<#@ include file="i-common-variables.biml" #>
+	<Packages>
+		<Package Name="01a - Deploy Staging Tables" ConstraintMode="Parallel" >
+			<Tasks>
+				<Container Name="SEQ Create Staging" ConstraintMode="Parallel">
+					<Tasks>
+						<# foreach (var table in RootNode.Tables) {  #>
+							<ExecuteSQL Name="SQL Create <#=table.Name#>" ConnectionName="<#=stageConn#>">
+								<DirectInput><#=table.GetTableSql().Replace("[" + table.SchemaName + "].[", "["  + stageSchema + "].[")#></DirectInput>
+							</ExecuteSQL>			
+						<# } #>
+					</Tasks>
+				</Container>
+			</Tasks>
+      </Package>
+  </Packages>
+</Biml>
+<#@ template language="C#" tier="3"#>

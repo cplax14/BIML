@@ -1,0 +1,633 @@
+<Biml>
+  <Connections>
+    <Connection Name="SourceDB" CreateInProject="true" ConnectionString="Server=.;Initial Catalog=DemoHealthClub;Provider=SQLNCLI11.1;Integrated Security=SSPI;" />
+    <Connection Name="CentralStaging" CreateInProject="true" ConnectionString="Server=.;Initial Catalog=CentralStaging;Provider=SQLNCLI11.1;Integrated Security=SSPI;" />
+    <Connection Name="ETLLog" CreateInProject="true" ConnectionString="Server=.;Initial Catalog=ETLLog;Provider=SQLNCLI11.1;Integrated Security=SSPI;" />
+    <Connection Name="DW" CreateInProject="true" ConnectionString="Server=.;Initial Catalog=DW;Provider=SQLNCLI11.1;Integrated Security=SSPI;" />
+    <FlatFileConnection Name="FF Errors CLIENTS" DelayValidation="true" FilePath="\\psf\Home\Documents\SQL Server Management Studio\Projects\BIML for Expanding CCTrans ETL 1-9-2015\ETL\ETL\ErrorFile\stagingErrorsCLIENTS.txt" FileFormat="FF Errors CLIENTS" />
+    <FlatFileConnection Name="FF Errors Referrers" DelayValidation="true" FilePath="\\psf\Home\Documents\SQL Server Management Studio\Projects\BIML for Expanding CCTrans ETL 1-9-2015\ETL\ETL\ErrorFile\stagingErrorsReferrers.txt" FileFormat="FF Errors Referrers" />
+    <FlatFileConnection Name="FF Errors tblCCTrans" DelayValidation="true" FilePath="\\psf\Home\Documents\SQL Server Management Studio\Projects\BIML for Expanding CCTrans ETL 1-9-2015\ETL\ETL\ErrorFile\stagingErrorstblCCTrans.txt" FileFormat="FF Errors tblCCTrans" />
+  </Connections>
+  <Tables>
+    <Table Name="CLIENTS" SchemaName="SourceDB.dbo">
+      <Columns>
+        <Column Name="RSSID" DataType="String" Length="50" IsNullable="true" />
+        <Column Name="ClientID" DataType="Int64" />
+        <Column Name="OLDCLientID" DataType="String" Length="50" IsNullable="true" />
+        <Column Name="LastName" DataType="String" Length="100" IsNullable="true" />
+        <Column Name="FirstName" DataType="String" Length="100" IsNullable="true" />
+        <Column Name="MiddleName" DataType="String" Length="50" IsNullable="true" />
+        <Column Name="SpiritName" DataType="String" Length="50" IsNullable="true" />
+        <Column Name="Dear" DataType="String" Length="50" IsNullable="true" />
+        <Column Name="Address" DataType="String" Length="255" IsNullable="true" />
+        <Column Name="Address2" DataType="String" Length="255" IsNullable="true" />
+        <Column Name="City" DataType="String" Length="50" IsNullable="true" />
+        <Column Name="State" DataType="String" Length="10" IsNullable="true" />
+        <Column Name="PostalCode" DataType="String" Length="15" IsNullable="true" />
+        <Column Name="ForeignZip" DataType="String" Length="15" IsNullable="true" />
+        <Column Name="Country" DataType="String" Length="60" />
+        <Column Name="WorkPhone" DataType="String" Length="20" IsNullable="true" />
+        <Column Name="WorkExtension" DataType="String" Length="10" IsNullable="true" />
+        <Column Name="HomePhone" DataType="String" Length="20" IsNullable="true" />
+        <Column Name="CellPhone" DataType="String" Length="20" IsNullable="true" />
+        <Column Name="Pager" DataType="String" Length="10" IsNullable="true" />
+        <Column Name="FaxNumber" DataType="String" Length="20" IsNullable="true" />
+        <Column Name="EmailName" DataType="String" Length="255" IsNullable="true" />
+        <Column Name="Birthdate" DataType="DateTime" IsNullable="true" />
+        <Column Name="ReferredBy" DataType="String" Length="50" IsNullable="true" />
+        <Column Name="FirstClass" DataType="DateTime" IsNullable="true" />
+        <Column Name="LastClass" DataType="DateTime" IsNullable="true" />
+        <Column Name="Notes" DataType="String" Length="16" IsNullable="true" />
+        <Column Name="MedicAlert" DataType="String" Length="16" IsNullable="true" />
+        <Column Name="CurrentSeries" IsNullable="true" />
+        <Column Name="EmergContact" DataType="String" Length="50" IsNullable="true" />
+        <Column Name="EmergRela" DataType="String" Length="50" IsNullable="true" />
+        <Column Name="EmergPhone" DataType="String" Length="20" IsNullable="true" />
+        <Column Name="BrochRequest" DataType="DateTime" IsNullable="true" />
+        <Column Name="Parent" DataType="String" Length="50" IsNullable="true" />
+        <Column Name="Email" DataType="String" Length="50" IsNullable="true" />
+        <Column Name="Occupation" DataType="String" Length="50" IsNullable="true" />
+        <Column Name="Inactive" DataType="Boolean" />
+        <Column Name="Location" />
+        <Column Name="HomeStudio" />
+        <Column Name="LoginName" DataType="String" Length="255" IsNullable="true" />
+        <Column Name="Title" DataType="String" Length="30" IsNullable="true" />
+        <Column Name="Password" DataType="String" Length="15" IsNullable="true" />
+        <Column Name="SignupDate" DataType="DateTime" IsNullable="true" />
+        <Column Name="IPaddress" DataType="String" Length="16" IsNullable="true" />
+        <Column Name="Status" DataType="String" Length="10" IsNullable="true" />
+        <Column Name="wspending" DataType="Boolean" />
+        <Column Name="VerificationInfo" DataType="String" Length="50" IsNullable="true" />
+        <Column Name="SecretWord" DataType="String" Length="100" IsNullable="true" />
+        <Column Name="SecretClue" DataType="String" Length="200" IsNullable="true" />
+        <Column Name="SendMeReminders" DataType="Boolean" />
+        <Column Name="Deleted" DataType="Boolean" />
+        <Column Name="LiabilityRelease" DataType="Boolean" />
+        <Column Name="TrainerID" DataType="Int64" IsNullable="true" />
+        <Column Name="Website" DataType="String" Length="100" IsNullable="true" />
+        <Column Name="IsCompany" DataType="Boolean" />
+        <Column Name="IsProspect" DataType="Boolean" />
+        <Column Name="ExpectedIncome" DataType="Currency" IsNullable="true" />
+        <Column Name="StaffAlertMsg" DataType="String" Length="16" IsNullable="true" />
+        <Column Name="Suspended" DataType="Boolean" />
+        <Column Name="SuspendToDate" DataType="DateTime" IsNullable="true" />
+        <Column Name="ShipAddress" DataType="String" Length="255" IsNullable="true" />
+        <Column Name="ShipCity" DataType="String" Length="50" IsNullable="true" />
+        <Column Name="ShipState" DataType="String" Length="5" IsNullable="true" />
+        <Column Name="ShipPostalCode" DataType="String" Length="15" IsNullable="true" />
+        <Column Name="CompanyName" DataType="String" Length="100" IsNullable="true" />
+        <Column Name="EmergEmail" DataType="String" Length="255" IsNullable="true" />
+        <Column Name="SuspendFromDate" DataType="DateTime" IsNullable="true" />
+        <Column Name="FirstContactDate" DataType="DateTime" IsNullable="true" />
+        <Column Name="CloseDate" DataType="DateTime" IsNullable="true" />
+        <Column Name="ExpectedCloseDate" DataType="DateTime" IsNullable="true" />
+        <Column Name="CloseProbability" DataType="String" Length="20" IsNullable="true" />
+        <Column Name="RepID" DataType="Int64" IsNullable="true" />
+        <Column Name="BakCloseDate" DataType="DateTime" IsNullable="true" />
+        <Column Name="Male" DataType="Boolean" IsNullable="true" />
+        <Column Name="RepID2" DataType="Int64" IsNullable="true" />
+        <Column Name="RepID3" DataType="Int64" IsNullable="true" />
+        <Column Name="OnlineSignUp" DataType="Boolean" />
+        <Column Name="BirthdayEmailSent" DataType="DateTime" IsNullable="true" />
+        <Column Name="XRegionCopy" DataType="Boolean" />
+        <Column Name="FirstClassDate" DataType="DateTime" IsNullable="true" />
+        <Column Name="FirstApptDate" DataType="DateTime" IsNullable="true" />
+        <Column Name="RepID4" DataType="Int64" IsNullable="true" />
+        <Column Name="RepID5" DataType="Int64" IsNullable="true" />
+        <Column Name="RepID6" DataType="Int64" IsNullable="true" />
+        <Column Name="ProspectStage" IsNullable="true" />
+        <Column Name="InsuranceCompany" DataType="String" Length="100" IsNullable="true" />
+        <Column Name="InsurancePolicyNum" DataType="String" Length="50" IsNullable="true" />
+        <Column Name="CCExpireEmailSent" DataType="DateTime" IsNullable="true" />
+        <Column Name="RefusedEmail" DataType="Boolean" />
+        <Column Name="CloseEmailSent" DataType="DateTime" IsNullable="true" />
+        <Column Name="CloseFollowupEmailSent" DataType="DateTime" IsNullable="true" />
+        <Column Name="ApptGenderPrefMale" DataType="Boolean" IsNullable="true" />
+        <Column Name="MobileProvider" IsNullable="true" />
+        <Column Name="AutomatedContactMethod" DataType="Int16" />
+        <Column Name="AllowMissingBillingAlert" DataType="Boolean" />
+        <Column Name="PasswordEnc" DataType="String" Length="100" IsNullable="true" />
+        <Column Name="Is3rdParty" DataType="Boolean" />
+        <Column Name="CreatedBy" DataType="Int64" IsNullable="true" />
+        <Column Name="DeactivatedTime" DataType="DateTime" IsNullable="true" />
+        <Column Name="StatusID" />
+        <Column Name="ShipCountry" DataType="String" Length="10" />
+        <Column Name="RewardsOptIn" DataType="Boolean" />
+        <Column Name="AllowAccountPurchases" DataType="Boolean" />
+        <Column Name="MergeTimeStamp" DataType="DateTime" IsNullable="true" />
+        <Column Name="MergeEmpID" DataType="Int64" IsNullable="true" />
+        <Column Name="MergeClientID" DataType="Int64" IsNullable="true" />
+        <Column Name="AccountPaymentsAllowed" DataType="Boolean" />
+        <Column Name="AutoPayLimit" DataType="Currency" IsNullable="true" />
+        <Column Name="FirstVisitApptEmailSent" DataType="DateTime" IsNullable="true" />
+        <Column Name="FirstVisitResEmailSent" DataType="DateTime" IsNullable="true" />
+        <Column Name="ReactivatedTime" DataType="DateTime" IsNullable="true" />
+        <Column Name="LockerNo" DataType="AnsiString" Length="50" IsNullable="true" />
+        <Column Name="IsSystem" DataType="Boolean" />
+        <Column Name="MeasurementsTaken" DataType="DateTime" IsNullable="true" />
+        <Column Name="Height" DataType="Single" IsNullable="true" />
+        <Column Name="Bust" DataType="Single" IsNullable="true" />
+        <Column Name="Waist" DataType="Single" IsNullable="true" />
+        <Column Name="Hip" DataType="Single" IsNullable="true" />
+        <Column Name="Girth" DataType="Single" IsNullable="true" />
+        <Column Name="Inseam" DataType="Single" IsNullable="true" />
+        <Column Name="Head" DataType="Single" IsNullable="true" />
+        <Column Name="Shoe" DataType="Single" IsNullable="true" />
+        <Column Name="Tights" DataType="Single" IsNullable="true" />
+        <Column Name="LiabilityRelBy" DataType="Int64" IsNullable="true" />
+        <Column Name="LiabilityAgreementDate" DataType="DateTime" IsNullable="true" />
+        <Column Name="ReferrerID" IsNullable="true" />
+        <Column Name="Longitude" DataType="Double" IsNullable="true" />
+        <Column Name="Latitude" DataType="Double" IsNullable="true" />
+        <Column Name="LockerDate" DataType="DateTime" IsNullable="true" />
+        <Column Name="LastFormulaNotes" DataType="String" Length="16" IsNullable="true" />
+        <Column Name="MBFVisitorID" IsNullable="true" />
+        <Column Name="ChangePassword" DataType="Boolean" />
+        <Column Name="BeltSize" DataType="Int16" IsNullable="true" />
+        <Column Name="SourceID" IsNullable="true" />
+        <Column Name="ModifiedBy" DataType="Int64" IsNullable="true" />
+        <Column Name="Modified" DataType="DateTime" IsNullable="true" />
+        <Column Name="MedicAlertShort" DataType="String" Length="200" IsNullable="true" />
+        <Column Name="StaffAlertMsgShort" DataType="String" Length="200" IsNullable="true" />
+        <Column Name="PasswordChangeKey" DataType="String" Length="20" IsNullable="true" />
+        <Column Name="EmailStatus" DataType="Byte" />
+        <Column Name="ConvertedDate" DataType="DateTime" IsNullable="true" />
+        <Column Name="QBOID" IsNullable="true" />
+        <Column Name="RESTSource" DataType="String" Length="100" IsNullable="true" />
+        <Column Name="SMSMessageOptOut" DataType="Boolean" />
+        <Column Name="SendMePromotions" DataType="Boolean" />
+        <Column Name="GenderOptionID" IsNullable="true" />
+      </Columns>
+    </Table>
+    <Table Name="Referrers" SchemaName="SourceDB.dbo">
+      <Columns>
+        <Column Name="ReferrerID" />
+        <Column Name="ReferrerName" DataType="String" Length="50" IsNullable="true" />
+        <Column Name="Notes" DataType="String" Length="16" IsNullable="true" />
+        <Column Name="IncludeInDropDown" DataType="Boolean" />
+        <Column Name="ParentID" IsNullable="true" />
+      </Columns>
+    </Table>
+    <Table Name="tblCCTrans" SchemaName="SourceDB.dbo">
+      <Columns>
+        <Column Name="TransactionNumber" />
+        <Column Name="AuthCode" DataType="String" Length="20" IsNullable="true" />
+        <Column Name="SaleID" DataType="Int64" IsNullable="true" />
+        <Column Name="ClientID" DataType="Int64" IsNullable="true" />
+        <Column Name="ccNum" DataType="String" Length="100" IsNullable="true" />
+        <Column Name="ExpMoYr" DataType="String" Length="4" IsNullable="true" />
+        <Column Name="ccAmt" IsNullable="true" />
+        <Column Name="Settled" DataType="Boolean" />
+        <Column Name="Status" DataType="String" Length="200" IsNullable="true" />
+        <Column Name="responseStr" DataType="String" Length="100" IsNullable="true" />
+        <Column Name="TransTime" DataType="DateTime" IsNullable="true" />
+        <Column Name="BatchNumber" IsNullable="true" />
+        <Column Name="MerchantID" DataType="String" Length="50" IsNullable="true" />
+        <Column Name="TerminalID" DataType="String" Length="50" IsNullable="true" />
+        <Column Name="LocationID" IsNullable="true" />
+        <Column Name="op_TxnNumber" DataType="Int64" IsNullable="true" />
+        <Column Name="CCLastFour" IsNullable="true" />
+        <Column Name="ACHName" DataType="String" Length="100" IsNullable="true" />
+        <Column Name="ACHAccountNum" DataType="String" Length="100" IsNullable="true" />
+        <Column Name="ACHRoutingNum" DataType="String" Length="9" IsNullable="true" />
+        <Column Name="OrderID" DataType="String" Length="30" IsNullable="true" />
+        <Column Name="ccType" DataType="String" Length="20" IsNullable="true" />
+        <Column Name="AuthTime" DataType="DateTime" IsNullable="true" />
+        <Column Name="AutoBatched" DataType="Boolean" />
+        <Column Name="IsSavingsAcct" DataType="Boolean" />
+        <Column Name="BatchFileNum" IsNullable="true" />
+        <Column Name="OutputFileNum" IsNullable="true" />
+        <Column Name="BatchErrorCode" DataType="String" Length="10" IsNullable="true" />
+        <Column Name="BatchErrorMsg" DataType="String" Length="100" IsNullable="true" />
+        <Column Name="CCSwiped" DataType="Boolean" />
+        <Column Name="BankPaymentDate" DataType="DateTime" IsNullable="true" />
+        <Column Name="ClientAlertID" IsNullable="true" />
+        <Column Name="DeclineCode" DataType="StringFixedLength" Length="20" IsNullable="true" />
+        <Column Name="Cardholder" DataType="String" Length="50" IsNullable="true" />
+        <Column Name="MBFTransaction" DataType="Boolean" />
+        <Column Name="TicketID" IsNullable="true" />
+        <Column Name="ACHLastFour" DataType="AnsiString" Length="4" IsNullable="true" />
+        <Column Name="SettleSubmitted" DataType="Boolean" />
+        <Column Name="ISOCode" DataType="StringFixedLength" Length="3" IsNullable="true" />
+        <Column Name="DiscoveryBenefits" DataType="Boolean" />
+        <Column Name="ccProcessor" DataType="AnsiString" Length="4" IsNullable="true" />
+        <Column Name="ccProcessor2" DataType="AnsiString" Length="4" IsNullable="true" />
+        <Column Name="MbGo" DataType="Boolean" IsNullable="true" />
+        <Column Name="SecurePaymentToken" DataType="Guid" IsNullable="true" />
+        <Column Name="MbBasic" DataType="Boolean" />
+        <Column Name="PaymentType" IsNullable="true" />
+      </Columns>
+    </Table>
+  </Tables>
+  <Packages>
+    <Package Name="02-Get One Database biml">
+      <Variables>
+        <Variable Name="ConnString" DataType="String">
+        </Variable>
+        <Variable Name="DBExists" DataType="Int16">
+        </Variable>
+        <Variable Name="Result" DataType="Int16">
+        </Variable>
+        <Variable Name="DBName" DataType="String">
+        </Variable>
+        <Variable Name="TableName" DataType="String">
+        </Variable>
+        <Variable Name="TaskName" DataType="String">
+        </Variable>
+        <Variable Name="LastLoadedDateCLIENTS" DataType="String">
+        </Variable>
+        <Variable Name="GetLastLoadedQueryCLIENTS" DataType="String">
+        </Variable>
+        <Variable Name="InsertForPreExecuteQueryCLIENTS" DataType="String">
+        </Variable>
+        <Variable Name="SourceSelectQueryCLIENTS" DataType="String">
+        </Variable>
+        <Variable Name="RowCountExtractCLIENTS" DataType="Int32">
+        </Variable>
+        <Variable Name="StagingErrorCountCLIENTS" DataType="Int32">
+        </Variable>
+        <Variable Name="UpdateControlDBQueryCLIENTS" DataType="String">
+        </Variable>
+        <Variable Name="UpdateForPostExecuteQueryCLIENTS" DataType="String">
+        </Variable>
+        <Variable Name="LastLoadedDateReferrers" DataType="String">
+        </Variable>
+        <Variable Name="GetLastLoadedQueryReferrers" DataType="String">
+        </Variable>
+        <Variable Name="InsertForPreExecuteQueryReferrers" DataType="String">
+        </Variable>
+        <Variable Name="SourceSelectQueryReferrers" DataType="String">
+        </Variable>
+        <Variable Name="RowCountExtractReferrers" DataType="Int32">
+        </Variable>
+        <Variable Name="StagingErrorCountReferrers" DataType="Int32">
+        </Variable>
+        <Variable Name="UpdateControlDBQueryReferrers" DataType="String">
+        </Variable>
+        <Variable Name="UpdateForPostExecuteQueryReferrers" DataType="String">
+        </Variable>
+        <Variable Name="LastLoadedDatetblCCTrans" DataType="String">
+        </Variable>
+        <Variable Name="GetLastLoadedQuerytblCCTrans" DataType="String">
+        </Variable>
+        <Variable Name="InsertForPreExecuteQuerytblCCTrans" DataType="String">
+        </Variable>
+        <Variable Name="SourceSelectQuerytblCCTrans" DataType="String">
+        </Variable>
+        <Variable Name="RowCountExtracttblCCTrans" DataType="Int32">
+        </Variable>
+        <Variable Name="StagingErrorCounttblCCTrans" DataType="Int32">
+        </Variable>
+        <Variable Name="UpdateControlDBQuerytblCCTrans" DataType="String">
+        </Variable>
+        <Variable Name="UpdateForPostExecuteQuerytblCCTrans" DataType="String">
+        </Variable>
+      </Variables>
+      <Tasks>
+        <Container Name="SEQ Staging Tasks" ConstraintMode="Linear">
+          <Tasks>
+            <ExecuteSQL Name="SQL Get Database to Process" ConnectionName="ETLLog">
+              <Results>
+                <Result Name="0" VariableName="User.DBName" />
+                <Result Name="1" VariableName="User.ConnString" />
+                <Result Name="2" VariableName="User.Result" />
+              </Results>
+              <DirectInput>EXEC usp_GetDatabase;</DirectInput>
+            </ExecuteSQL>
+            <Expression Name="EXP Log Start of Database" Expression="@[User::DatabaseStartTime]= GETDATE()" />
+            <Container Name="SEQ Stage Data">
+              <Tasks>
+                <Container Name="SEQ Get CLIENTS">
+                  <Tasks>
+                    <Expression Name="EXP Set Tablename for CLIENTS" Expression="@[User::TableName]=&quot;CLIENTS&quot;" />
+                    <ExecuteSQL Name="SQL Get Last Loaded Date for CLIENTS" ConnectionName="ETLLog">
+                      <Results>
+                        <Result Name="0" VariableName="User.LastLoadedDateCLIENTS" />
+                      </Results>
+                      <VariableInput VariableName="User.GetLastLoadedQueryCLIENTS" />
+                    </ExecuteSQL>
+                    <Dataflow Name="DFT Get CLIENTS Table">
+                      <Transformations>
+                        <OleDbSource Name="OLE Source CLIENTS" ConnectionName="SourceDB">
+                          <VariableInput VariableName="User.SourceSelectQueryCLIENTS" />
+                        </OleDbSource>
+                        <RowCount Name="RC Extract" VariableName="User.RowCountExtractCLIENTS" />
+                        <OleDbDestination Name="OLE Destination dbo CLIENTS" ConnectionName="CentralStaging">
+                          <ErrorHandling ErrorRowDisposition="RedirectRow" TruncationRowDisposition="RedirectRow" />
+                          <ExternalTableOutput Table="dbo.CLIENTS" />
+                        </OleDbDestination>
+                        <RowCount Name="RC Error" VariableName="User.StagingErrorCountCLIENTS">
+                          <InputPath OutputPathName="OLE Destination dbo CLIENTS.Error" />
+                        </RowCount>
+                        <FlatFileDestination Name="FF Errors CLIENTS" ConnectionName="FF Errors CLIENTS">
+                          <InputPath OutputPathName="RC Error.Output" />
+                        </FlatFileDestination>
+                      </Transformations>
+                    </Dataflow>
+                    <ExecuteSQL Name="SQL Update Control DB CLIENTS" ConnectionName="ETLLog">
+                      <VariableInput VariableName="User.UpdateControlDBQueryCLIENTS" />
+                    </ExecuteSQL>
+                  </Tasks>
+                </Container>
+                <Container Name="SEQ Get Referrers">
+                  <Tasks>
+                    <Expression Name="EXP Set Tablename for Referrers" Expression="@[User::TableName]=&quot;CLIENTS&quot;" />
+                    <ExecuteSQL Name="SQL Get Last Loaded Date for Referrers" ConnectionName="ETLLog">
+                      <Results>
+                        <Result Name="0" VariableName="User.LastLoadedDateReferrers" />
+                      </Results>
+                      <VariableInput VariableName="User.GetLastLoadedQueryReferrers" />
+                    </ExecuteSQL>
+                    <Dataflow Name="DFT Get Referrers Table">
+                      <Transformations>
+                        <OleDbSource Name="OLE Source Referrers" ConnectionName="SourceDB">
+                          <VariableInput VariableName="User.SourceSelectQueryReferrers" />
+                        </OleDbSource>
+                        <RowCount Name="RC Extract" VariableName="User.RowCountExtractReferrers" />
+                        <OleDbDestination Name="OLE Destination dbo Referrers" ConnectionName="CentralStaging">
+                          <ErrorHandling ErrorRowDisposition="RedirectRow" TruncationRowDisposition="RedirectRow" />
+                          <ExternalTableOutput Table="dbo.Referrers" />
+                        </OleDbDestination>
+                        <RowCount Name="RC Error" VariableName="User.StagingErrorCountReferrers">
+                          <InputPath OutputPathName="OLE Destination dbo Referrers.Error" />
+                        </RowCount>
+                        <FlatFileDestination Name="FF Errors Referrers" ConnectionName="FF Errors Referrers">
+                          <InputPath OutputPathName="RC Error.Output" />
+                        </FlatFileDestination>
+                      </Transformations>
+                    </Dataflow>
+                    <ExecuteSQL Name="SQL Update Control DB Referrers" ConnectionName="ETLLog">
+                      <VariableInput VariableName="User.UpdateControlDBQueryReferrers" />
+                    </ExecuteSQL>
+                  </Tasks>
+                </Container>
+                <Container Name="SEQ Get tblCCTrans">
+                  <Tasks>
+                    <Expression Name="EXP Set Tablename for tblCCTrans" Expression="@[User::TableName]=&quot;CLIENTS&quot;" />
+                    <ExecuteSQL Name="SQL Get Last Loaded Date for tblCCTrans" ConnectionName="ETLLog">
+                      <Results>
+                        <Result Name="0" VariableName="User.LastLoadedDatetblCCTrans" />
+                      </Results>
+                      <VariableInput VariableName="User.GetLastLoadedQuerytblCCTrans" />
+                    </ExecuteSQL>
+                    <Dataflow Name="DFT Get tblCCTrans Table">
+                      <Transformations>
+                        <OleDbSource Name="OLE Source tblCCTrans" ConnectionName="SourceDB">
+                          <VariableInput VariableName="User.SourceSelectQuerytblCCTrans" />
+                        </OleDbSource>
+                        <RowCount Name="RC Extract" VariableName="User.RowCountExtracttblCCTrans" />
+                        <OleDbDestination Name="OLE Destination dbo tblCCTrans" ConnectionName="CentralStaging">
+                          <ErrorHandling ErrorRowDisposition="RedirectRow" TruncationRowDisposition="RedirectRow" />
+                          <ExternalTableOutput Table="dbo.tblCCTrans" />
+                        </OleDbDestination>
+                        <RowCount Name="RC Error" VariableName="User.StagingErrorCounttblCCTrans">
+                          <InputPath OutputPathName="OLE Destination dbo tblCCTrans.Error" />
+                        </RowCount>
+                        <FlatFileDestination Name="FF Errors tblCCTrans" ConnectionName="FF Errors tblCCTrans">
+                          <InputPath OutputPathName="RC Error.Output" />
+                        </FlatFileDestination>
+                      </Transformations>
+                    </Dataflow>
+                    <ExecuteSQL Name="SQL Update Control DB tblCCTrans" ConnectionName="ETLLog">
+                      <VariableInput VariableName="User.UpdateControlDBQuerytblCCTrans" />
+                    </ExecuteSQL>
+                  </Tasks>
+                </Container>
+              </Tasks>
+            </Container>
+          </Tasks>
+        </Container>
+      </Tasks>
+      <Connections>
+        <Connection ConnectionName="CentralStaging" />
+        <Connection ConnectionName="ETLLog" />
+        <Connection ConnectionName="SourceDB" />
+      </Connections>
+    </Package>
+  </Packages>
+  <Schemas>
+    <Schema Name="dbo" DatabaseName="SourceDB" />
+    <Schema Name="dbo" DatabaseName="CentralStaging" />
+  </Schemas>
+  <FileFormats>
+    <FlatFileFormat Name="FF Errors CLIENTS" CodePage="1252" ColumnNamesInFirstDataRow="true" RowDelimiter="CRLF" IsUnicode="false">
+      <Columns>
+        <Column Name="RSSID" Length="50" DataType="String" Delimiter="," />
+        <Column Name="ClientID" DataType="Int64" Delimiter="," />
+        <Column Name="OLDCLientID" Length="50" DataType="String" Delimiter="," />
+        <Column Name="LastName" Length="100" DataType="String" Delimiter="," />
+        <Column Name="FirstName" Length="100" DataType="String" Delimiter="," />
+        <Column Name="MiddleName" Length="50" DataType="String" Delimiter="," />
+        <Column Name="SpiritName" Length="50" DataType="String" Delimiter="," />
+        <Column Name="Dear" Length="50" DataType="String" Delimiter="," />
+        <Column Name="Address" Length="255" DataType="String" Delimiter="," />
+        <Column Name="Address2" Length="255" DataType="String" Delimiter="," />
+        <Column Name="City" Length="50" DataType="String" Delimiter="," />
+        <Column Name="State" Length="10" DataType="String" Delimiter="," />
+        <Column Name="PostalCode" Length="15" DataType="String" Delimiter="," />
+        <Column Name="ForeignZip" Length="15" DataType="String" Delimiter="," />
+        <Column Name="Country" Length="60" DataType="String" Delimiter="," />
+        <Column Name="WorkPhone" Length="20" DataType="String" Delimiter="," />
+        <Column Name="WorkExtension" Length="10" DataType="String" Delimiter="," />
+        <Column Name="HomePhone" Length="20" DataType="String" Delimiter="," />
+        <Column Name="CellPhone" Length="20" DataType="String" Delimiter="," />
+        <Column Name="Pager" Length="10" DataType="String" Delimiter="," />
+        <Column Name="FaxNumber" Length="20" DataType="String" Delimiter="," />
+        <Column Name="EmailName" Length="255" DataType="String" Delimiter="," />
+        <Column Name="Birthdate" DataType="DateTime" Delimiter="," />
+        <Column Name="ReferredBy" Length="50" DataType="String" Delimiter="," />
+        <Column Name="FirstClass" DataType="DateTime" Delimiter="," />
+        <Column Name="LastClass" DataType="DateTime" Delimiter="," />
+        <Column Name="Notes" Length="16" DataType="String" Delimiter="," />
+        <Column Name="MedicAlert" Length="16" DataType="String" Delimiter="," />
+        <Column Name="CurrentSeries" Delimiter="," />
+        <Column Name="EmergContact" Length="50" DataType="String" Delimiter="," />
+        <Column Name="EmergRela" Length="50" DataType="String" Delimiter="," />
+        <Column Name="EmergPhone" Length="20" DataType="String" Delimiter="," />
+        <Column Name="BrochRequest" DataType="DateTime" Delimiter="," />
+        <Column Name="Parent" Length="50" DataType="String" Delimiter="," />
+        <Column Name="Email" Length="50" DataType="String" Delimiter="," />
+        <Column Name="Occupation" Length="50" DataType="String" Delimiter="," />
+        <Column Name="Inactive" DataType="Boolean" Delimiter="," />
+        <Column Name="Location" Delimiter="," />
+        <Column Name="HomeStudio" Delimiter="," />
+        <Column Name="LoginName" Length="255" DataType="String" Delimiter="," />
+        <Column Name="Title" Length="30" DataType="String" Delimiter="," />
+        <Column Name="Password" Length="15" DataType="String" Delimiter="," />
+        <Column Name="SignupDate" DataType="DateTime" Delimiter="," />
+        <Column Name="IPaddress" Length="16" DataType="String" Delimiter="," />
+        <Column Name="Status" Length="10" DataType="String" Delimiter="," />
+        <Column Name="wspending" DataType="Boolean" Delimiter="," />
+        <Column Name="VerificationInfo" Length="50" DataType="String" Delimiter="," />
+        <Column Name="SecretWord" Length="100" DataType="String" Delimiter="," />
+        <Column Name="SecretClue" Length="200" DataType="String" Delimiter="," />
+        <Column Name="SendMeReminders" DataType="Boolean" Delimiter="," />
+        <Column Name="Deleted" DataType="Boolean" Delimiter="," />
+        <Column Name="LiabilityRelease" DataType="Boolean" Delimiter="," />
+        <Column Name="TrainerID" DataType="Int64" Delimiter="," />
+        <Column Name="Website" Length="100" DataType="String" Delimiter="," />
+        <Column Name="IsCompany" DataType="Boolean" Delimiter="," />
+        <Column Name="IsProspect" DataType="Boolean" Delimiter="," />
+        <Column Name="ExpectedIncome" DataType="Currency" Delimiter="," />
+        <Column Name="StaffAlertMsg" Length="16" DataType="String" Delimiter="," />
+        <Column Name="Suspended" DataType="Boolean" Delimiter="," />
+        <Column Name="SuspendToDate" DataType="DateTime" Delimiter="," />
+        <Column Name="ShipAddress" Length="255" DataType="String" Delimiter="," />
+        <Column Name="ShipCity" Length="50" DataType="String" Delimiter="," />
+        <Column Name="ShipState" Length="5" DataType="String" Delimiter="," />
+        <Column Name="ShipPostalCode" Length="15" DataType="String" Delimiter="," />
+        <Column Name="CompanyName" Length="100" DataType="String" Delimiter="," />
+        <Column Name="EmergEmail" Length="255" DataType="String" Delimiter="," />
+        <Column Name="SuspendFromDate" DataType="DateTime" Delimiter="," />
+        <Column Name="FirstContactDate" DataType="DateTime" Delimiter="," />
+        <Column Name="CloseDate" DataType="DateTime" Delimiter="," />
+        <Column Name="ExpectedCloseDate" DataType="DateTime" Delimiter="," />
+        <Column Name="CloseProbability" Length="20" DataType="String" Delimiter="," />
+        <Column Name="RepID" DataType="Int64" Delimiter="," />
+        <Column Name="BakCloseDate" DataType="DateTime" Delimiter="," />
+        <Column Name="Male" DataType="Boolean" Delimiter="," />
+        <Column Name="RepID2" DataType="Int64" Delimiter="," />
+        <Column Name="RepID3" DataType="Int64" Delimiter="," />
+        <Column Name="OnlineSignUp" DataType="Boolean" Delimiter="," />
+        <Column Name="BirthdayEmailSent" DataType="DateTime" Delimiter="," />
+        <Column Name="XRegionCopy" DataType="Boolean" Delimiter="," />
+        <Column Name="FirstClassDate" DataType="DateTime" Delimiter="," />
+        <Column Name="FirstApptDate" DataType="DateTime" Delimiter="," />
+        <Column Name="RepID4" DataType="Int64" Delimiter="," />
+        <Column Name="RepID5" DataType="Int64" Delimiter="," />
+        <Column Name="RepID6" DataType="Int64" Delimiter="," />
+        <Column Name="ProspectStage" Delimiter="," />
+        <Column Name="InsuranceCompany" Length="100" DataType="String" Delimiter="," />
+        <Column Name="InsurancePolicyNum" Length="50" DataType="String" Delimiter="," />
+        <Column Name="CCExpireEmailSent" DataType="DateTime" Delimiter="," />
+        <Column Name="RefusedEmail" DataType="Boolean" Delimiter="," />
+        <Column Name="CloseEmailSent" DataType="DateTime" Delimiter="," />
+        <Column Name="CloseFollowupEmailSent" DataType="DateTime" Delimiter="," />
+        <Column Name="ApptGenderPrefMale" DataType="Boolean" Delimiter="," />
+        <Column Name="MobileProvider" Delimiter="," />
+        <Column Name="AutomatedContactMethod" DataType="Int16" Delimiter="," />
+        <Column Name="AllowMissingBillingAlert" DataType="Boolean" Delimiter="," />
+        <Column Name="PasswordEnc" Length="100" DataType="String" Delimiter="," />
+        <Column Name="Is3rdParty" DataType="Boolean" Delimiter="," />
+        <Column Name="CreatedBy" DataType="Int64" Delimiter="," />
+        <Column Name="DeactivatedTime" DataType="DateTime" Delimiter="," />
+        <Column Name="StatusID" Delimiter="," />
+        <Column Name="ShipCountry" Length="10" DataType="String" Delimiter="," />
+        <Column Name="RewardsOptIn" DataType="Boolean" Delimiter="," />
+        <Column Name="AllowAccountPurchases" DataType="Boolean" Delimiter="," />
+        <Column Name="MergeTimeStamp" DataType="DateTime" Delimiter="," />
+        <Column Name="MergeEmpID" DataType="Int64" Delimiter="," />
+        <Column Name="MergeClientID" DataType="Int64" Delimiter="," />
+        <Column Name="AccountPaymentsAllowed" DataType="Boolean" Delimiter="," />
+        <Column Name="AutoPayLimit" DataType="Currency" Delimiter="," />
+        <Column Name="FirstVisitApptEmailSent" DataType="DateTime" Delimiter="," />
+        <Column Name="FirstVisitResEmailSent" DataType="DateTime" Delimiter="," />
+        <Column Name="ReactivatedTime" DataType="DateTime" Delimiter="," />
+        <Column Name="LockerNo" Length="50" DataType="AnsiString" Delimiter="," />
+        <Column Name="IsSystem" DataType="Boolean" Delimiter="," />
+        <Column Name="MeasurementsTaken" DataType="DateTime" Delimiter="," />
+        <Column Name="Height" DataType="Single" Delimiter="," />
+        <Column Name="Bust" DataType="Single" Delimiter="," />
+        <Column Name="Waist" DataType="Single" Delimiter="," />
+        <Column Name="Hip" DataType="Single" Delimiter="," />
+        <Column Name="Girth" DataType="Single" Delimiter="," />
+        <Column Name="Inseam" DataType="Single" Delimiter="," />
+        <Column Name="Head" DataType="Single" Delimiter="," />
+        <Column Name="Shoe" DataType="Single" Delimiter="," />
+        <Column Name="Tights" DataType="Single" Delimiter="," />
+        <Column Name="LiabilityRelBy" DataType="Int64" Delimiter="," />
+        <Column Name="LiabilityAgreementDate" DataType="DateTime" Delimiter="," />
+        <Column Name="ReferrerID" Delimiter="," />
+        <Column Name="Longitude" DataType="Double" Delimiter="," />
+        <Column Name="Latitude" DataType="Double" Delimiter="," />
+        <Column Name="LockerDate" DataType="DateTime" Delimiter="," />
+        <Column Name="LastFormulaNotes" Length="16" DataType="String" Delimiter="," />
+        <Column Name="MBFVisitorID" Delimiter="," />
+        <Column Name="ChangePassword" DataType="Boolean" Delimiter="," />
+        <Column Name="BeltSize" DataType="Int16" Delimiter="," />
+        <Column Name="SourceID" Delimiter="," />
+        <Column Name="ModifiedBy" DataType="Int64" Delimiter="," />
+        <Column Name="Modified" DataType="DateTime" Delimiter="," />
+        <Column Name="MedicAlertShort" Length="200" DataType="String" Delimiter="," />
+        <Column Name="StaffAlertMsgShort" Length="200" DataType="String" Delimiter="," />
+        <Column Name="PasswordChangeKey" Length="20" DataType="String" Delimiter="," />
+        <Column Name="EmailStatus" DataType="Byte" Delimiter="," />
+        <Column Name="ConvertedDate" DataType="DateTime" Delimiter="," />
+        <Column Name="QBOID" Delimiter="," />
+        <Column Name="RESTSource" Length="100" DataType="String" Delimiter="," />
+        <Column Name="SMSMessageOptOut" DataType="Boolean" Delimiter="," />
+        <Column Name="SendMePromotions" DataType="Boolean" Delimiter="," />
+        <Column Name="GenderOptionID" Delimiter="," />
+        <Column Name="ErrorCode" Delimiter="," />
+        <Column Name="ErrorColumn" Delimiter="CRLF" />
+      </Columns>
+    </FlatFileFormat>
+    <FlatFileFormat Name="FF Errors Referrers" CodePage="1252" ColumnNamesInFirstDataRow="true" RowDelimiter="CRLF" IsUnicode="false">
+      <Columns>
+        <Column Name="ReferrerID" Delimiter="," />
+        <Column Name="ReferrerName" Length="50" DataType="String" Delimiter="," />
+        <Column Name="Notes" Length="16" DataType="String" Delimiter="," />
+        <Column Name="IncludeInDropDown" DataType="Boolean" Delimiter="," />
+        <Column Name="ParentID" Delimiter="," />
+        <Column Name="ErrorCode" Delimiter="," />
+        <Column Name="ErrorColumn" Delimiter="CRLF" />
+      </Columns>
+    </FlatFileFormat>
+    <FlatFileFormat Name="FF Errors tblCCTrans" CodePage="1252" ColumnNamesInFirstDataRow="true" RowDelimiter="CRLF" IsUnicode="false">
+      <Columns>
+        <Column Name="TransactionNumber" Delimiter="," />
+        <Column Name="AuthCode" Length="20" DataType="String" Delimiter="," />
+        <Column Name="SaleID" DataType="Int64" Delimiter="," />
+        <Column Name="ClientID" DataType="Int64" Delimiter="," />
+        <Column Name="ccNum" Length="100" DataType="String" Delimiter="," />
+        <Column Name="ExpMoYr" Length="4" DataType="String" Delimiter="," />
+        <Column Name="ccAmt" Delimiter="," />
+        <Column Name="Settled" DataType="Boolean" Delimiter="," />
+        <Column Name="Status" Length="200" DataType="String" Delimiter="," />
+        <Column Name="responseStr" Length="100" DataType="String" Delimiter="," />
+        <Column Name="TransTime" DataType="DateTime" Delimiter="," />
+        <Column Name="BatchNumber" Delimiter="," />
+        <Column Name="MerchantID" Length="50" DataType="String" Delimiter="," />
+        <Column Name="TerminalID" Length="50" DataType="String" Delimiter="," />
+        <Column Name="LocationID" Delimiter="," />
+        <Column Name="op_TxnNumber" DataType="Int64" Delimiter="," />
+        <Column Name="CCLastFour" Delimiter="," />
+        <Column Name="ACHName" Length="100" DataType="String" Delimiter="," />
+        <Column Name="ACHAccountNum" Length="100" DataType="String" Delimiter="," />
+        <Column Name="ACHRoutingNum" Length="9" DataType="String" Delimiter="," />
+        <Column Name="OrderID" Length="30" DataType="String" Delimiter="," />
+        <Column Name="ccType" Length="20" DataType="String" Delimiter="," />
+        <Column Name="AuthTime" DataType="DateTime" Delimiter="," />
+        <Column Name="AutoBatched" DataType="Boolean" Delimiter="," />
+        <Column Name="IsSavingsAcct" DataType="Boolean" Delimiter="," />
+        <Column Name="BatchFileNum" Delimiter="," />
+        <Column Name="OutputFileNum" Delimiter="," />
+        <Column Name="BatchErrorCode" Length="10" DataType="String" Delimiter="," />
+        <Column Name="BatchErrorMsg" Length="100" DataType="String" Delimiter="," />
+        <Column Name="CCSwiped" DataType="Boolean" Delimiter="," />
+        <Column Name="BankPaymentDate" DataType="DateTime" Delimiter="," />
+        <Column Name="ClientAlertID" Delimiter="," />
+        <Column Name="DeclineCode" Length="20" DataType="StringFixedLength" Delimiter="," />
+        <Column Name="Cardholder" Length="50" DataType="String" Delimiter="," />
+        <Column Name="MBFTransaction" DataType="Boolean" Delimiter="," />
+        <Column Name="TicketID" Delimiter="," />
+        <Column Name="ACHLastFour" Length="4" DataType="AnsiString" Delimiter="," />
+        <Column Name="SettleSubmitted" DataType="Boolean" Delimiter="," />
+        <Column Name="ISOCode" Length="3" DataType="StringFixedLength" Delimiter="," />
+        <Column Name="DiscoveryBenefits" DataType="Boolean" Delimiter="," />
+        <Column Name="ccProcessor" Length="4" DataType="AnsiString" Delimiter="," />
+        <Column Name="ccProcessor2" Length="4" DataType="AnsiString" Delimiter="," />
+        <Column Name="MbGo" DataType="Boolean" Delimiter="," />
+        <Column Name="SecurePaymentToken" DataType="Guid" Delimiter="," />
+        <Column Name="MbBasic" DataType="Boolean" Delimiter="," />
+        <Column Name="PaymentType" Delimiter="," />
+        <Column Name="ErrorCode" Delimiter="," />
+        <Column Name="ErrorColumn" Delimiter="CRLF" />
+      </Columns>
+    </FlatFileFormat>
+  </FileFormats>
+  <Databases>
+    <Database Name="SourceDB" ConnectionName="SourceDB" />
+    <Database Name="CentralStaging" ConnectionName="CentralStaging" />
+  </Databases>
+</Biml>

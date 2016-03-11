@@ -1,0 +1,34 @@
+<Biml xmlns="http://schemas.varigence.com/biml.xsd">
+    <#@ include file="i-common-variables.biml" #>	
+		<FileFormats>
+			<# foreach (var table in RootNode.Tables) { #>
+		
+				<FlatFileFormat 
+						Name="FF Errors <#=table.Name#>"  
+						CodePage="1252"
+						RowDelimiter="CRLF"
+						ColumnNamesInFirstDataRow="true"
+						IsUnicode="false"
+						FlatFileType="Delimited">
+					<Columns>
+						<# foreach(var column in table.Columns) { #>
+							<Column Name="<#=column.Name#>" Length="<#=column.Length.ToString()#>" DataType="<#=column.DataType.ToString()#>"  Delimiter="," />
+						<# } #>
+						<Column Name="ErrorCode" DataType="Int32"  Delimiter="," />
+						<Column Name="ErrorColumn" DataType="Int32"  Delimiter="CRLF" />
+					</Columns>
+				</FlatFileFormat>
+			<# } #>
+		</FileFormats>
+		<Connections>
+			<# foreach (var table in RootNode.Tables) { #>
+				<FlatFileConnection	
+					Name="FF Errors <#=table.Name#>" 
+					FileFormat="FF Errors <#=table.Name#>"
+					FilePath="<#=errorfilepath#>stagingErrors<#=table.Name#>.txt"
+					DelayValidation="true">
+				</FlatFileConnection>	
+			<# } #>
+		</Connections>
+</Biml>
+<#@ template language="C#" tier="3"#>

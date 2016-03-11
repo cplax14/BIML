@@ -1,0 +1,21 @@
+<#
+
+string stageSchema ="dbo";
+string dwSchema ="dbo";
+
+
+string stageConn = "CentralStaging";
+string srcConn = "SourceDB";
+string etlConn = "ETLLog";
+string dwConn = "DW";
+var dwConnString = "Server=.;Initial Catalog=DW;Provider=SQLNCLI11.1;Integrated Security=SSPI;" ;
+string errorfilepath = "\\\\psf\\Home\\Documents\\SQL Server Management Studio\\Projects\\BIML for Expanding CCTrans ETL 1-9-2015\\ETL\\ETL\\ErrorFile\\";
+
+
+string stageDB = "CentralStaging";
+string stageViewPrefix = "vstg";
+string tmpPrefix = "tmp_scd_";
+
+string mssqlpath = "C:\\Program Files\\Microsoft SQL Server\\MSSQL12.MSSQLServer\\MSSQL\\Data\\";
+string dwDB = "DW";
+#>

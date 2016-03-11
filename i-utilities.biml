@@ -1,0 +1,131 @@
+
+<#+
+
+  	public AstTableNode GetSqlServerExtendedProperties(string conn, AstTableNode table)
+	{
+		var query = "SELECT value,name FROM fn_listextendedproperty (NULL,'schema','" + table.SchemaName + "', 'table', '" + table.Name + "', NULL, NULL)" ;
+		var extProps = ExternalDataAccess.GetDataTable(conn, query);
+		foreach (DataRow extProp in extProps.Rows){ 
+			table.AddAnnotation(AnnotationType.Tag, extProp["value"].ToString(), extProp["name"].ToString());
+			}
+		return table;
+	}
+	
+	  	public AstTableColumnBaseNode GetSqlServerExtendedProperties(string conn, AstTableNode table,  AstTableColumnBaseNode column)
+	{
+		var query = "SELECT value,name FROM fn_listextendedproperty (NULL,'schema','" + table.SchemaName + "', 'table', '" + table.Name + "', 'column', '" + column.Name + "')" ;
+		var extProps = ExternalDataAccess.GetDataTable(conn, query);
+		foreach (DataRow extProp in extProps.Rows){ 
+			column.AddAnnotation(AnnotationType.Tag, extProp["value"].ToString(), extProp["name"].ToString());
+			}
+		return column;
+	}
+
+	public string GetSCDColumns(AstTableNode table, string SCDType)
+	{
+		string tableName = table.Name;
+		string columnExpr = ""; 
+        int columnCheck = 0; 
+
+		if (SCDType=="2") {
+			foreach(var column in table.Columns.Where(item => item.GetTag("ColumnRole")=="SCD2" )) {
+			  if (columnCheck > 0) {
+				columnExpr = columnExpr + " || ";
+				}	
+			  columnExpr = columnExpr + ReplaceNullColumns(column);
+			  columnCheck = 1;        
+		   }
+	   } else {
+			foreach(var column in table.Columns.Where(item => item.GetTag("ColumnRole")=="SCD1" || item.GetTag("ColumnRole")=="SCD2")) {
+			  if (columnCheck > 0) {
+				columnExpr = columnExpr + " || ";
+			  }	
+			  columnExpr = columnExpr + ReplaceNullColumns(column);
+			  columnCheck = 1;
+			}
+	   }
+	   return columnExpr;
+	}
+
+	public string ReplaceNullColumns(AstTableColumnBaseNode column) {
+
+		string columnString;
+		string nullValue = "";
+
+		switch (column.DataType)
+		{
+			case DbType.Byte:
+			case DbType.Boolean:
+			case DbType.Int16:
+			case DbType.Int32:
+			case DbType.Int64:
+			case DbType.Single:
+			case DbType.Decimal:
+			case DbType.Double:
+			case DbType.VarNumeric:
+			case DbType.Currency:
+				nullValue = "0";
+				break;
+			case DbType.String:
+			case DbType.StringFixedLength:
+			case DbType.AnsiString:
+			case DbType.AnsiStringFixedLength:
+			case DbType.Date:
+			case DbType.DateTime:
+				nullValue = "\"\"";
+				break;
+			break;
+		}
+		columnString = "( REPLACENULL(" + column.Name + ", " + nullValue + ") !=" 
+					  + "REPLACENULL(dim_" + column.Name + ", " + nullValue + ") ) ";
+		return columnString;
+	
+	}
+		
+
+	  
+	public string GetSCDUpdateQuery(AstTableNode table, string stageSchema, string tmpPrefix, string SCDType)
+	{
+		string tableName = table.Name;
+		
+		string query = "UPDATE target \r\nSET \r\n"; 
+        int columnCheck = 0; 
+	
+
+		if (SCDType == "1") {
+			foreach(var column in table.Columns.Where(item => item.GetTag("ColumnRole")=="SCD1")) {
+			  if (columnCheck > 0) {
+				query = query + "\r\n, ";
+			  }	
+			  query = query + "target." + column.Name + " =" + " source." + column.Name;
+			  columnCheck = 1;        
+		   }
+		} else {
+			query = query + "\r\n target." + table.Columns.Where(i=>i.GetTag("ColumnRole")=="ExpireDate").ElementAt(0)
+						+ " = source." + table.Columns.Where(i=>i.GetTag("ColumnRole")=="ExpireDate").ElementAt(0);
+		}
+	   query = query + "\r\n, target." + table.Columns.Where(i=>i.GetTag("ColumnRole")=="Audit").ElementAt(0)
+				+ " = source." + table.Columns.Where(i=>i.GetTag("ColumnRole")=="Audit").ElementAt(0)
+	            + "\r\n FROM " + tableName + " target"
+				+ "\r\n JOIN " + stageSchema + "." + tmpPrefix + tableName + " source on \r\n";
+
+	   columnCheck = 0;
+	   foreach(var column in table.Columns.Where(item => item.GetTag("ColumnRole")=="BK")) {
+		  if (columnCheck > 0) {
+		    query = query + "\r\n AND  ";
+		  }	
+          query = query + "target." + column.Name + " =" + " source." + column.Name;
+          columnCheck = 1;        
+       }
+
+	   if (SCDType == "2") {
+		  query = query + "\r\n AND target." + table.Columns.Where(i=>i.GetTag("ColumnRole")=="Audit").ElementAt(0)
+			+ " &lt;&gt; source." + table.Columns.Where(i=>i.GetTag("ColumnRole")=="Audit").ElementAt(0)
+			+ "\r\n AND target." + table.Columns.Where(i=>i.GetTag("ColumnRole")=="ExpireDate").ElementAt(0) + " IS NULL";
+	   }
+	   return query;
+	}  
+	
+#>
+<#@ import namespace="System.Data.SqlClient" #>
+<#@ import namespace="System.Data" #>

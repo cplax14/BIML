@@ -1,0 +1,36 @@
+<Biml xmlns="http://schemas.varigence.com/biml.xsd">
+<#@ include file="i-common-variables.biml"  #> 
+	<#
+			  var importSrcSchemas = new[] {"dbo"};
+			  var importTables = new[]{"CLIENTS", "Referrers","tblCCTrans","tbltypegroup","tblVisitTypes","tblClasses","tblClassSch","VISIT DATA","Categories","Sales","Sales Details","tblPayments","tblSDPayments","PRODUCTS"};
+			  var srcDB = RootNode.DbConnections["SourceDB"].GetDatabaseSchema(importSrcSchemas, importTables,ImportOptions.ExcludeForeignKey|ImportOptions.ExcludeColumnDefault|ImportOptions.ExcludeViews);
+			 
+			  string ConnStr = "Provider=SQLNCLI11.1;Server=.;Initial Catalog=DemoHealthClub;Integrated Security=SSPI;";
+			  string sql = "SELECT TABLE_NAME,COLUMN_NAME from information_schema.columns where table_name in('CLIENTS', 'Referrers','tblCCTrans','tbltypegroup','tblVisitTypes','tblClasses','tblClassSch','VISIT DATA','Categories','Sales','Sales Details','tblPayments','tblSDPayments','PRODUCTS') and (data_type in ('TEXT', 'NTEXT','IMAGE' ,'XML', 'VARBINARY')    or     (data_type = 'VARCHAR' and character_maximum_length = -1)    OR    (data_type = 'NVARCHAR' and character_maximum_length = -1))";
+			DataTable columnsToExclude = ExternalDataAccess.GetDataTable(ConnStr,sql); 
+			
+	#>
+
+	
+
+<# foreach(DataRow row in columnsToExclude.Rows)
+	{
+		/*MessageBox.Show(row["TABLE_NAME"].ToString()+" "+row["COLUMN_NAME"].ToString());*/
+		var tablename = row["TABLE_NAME"].ToString();
+		var columnname = row["COLUMN_NAME"].ToString();
+		/*var tableList = new List<string>(RootNode.Tables.Name.ToList());*/
+		foreach (var item in RootNode.Tables.Where(c => c.Name == tablename && ))
+		{
+			MessageBox.Show("Found: "+row["TABLE_NAME"].ToString()+" "+row["COLUMN_NAME"].ToString()+" to Remove");
+		}
+	}
+#>
+
+</Biml>
+<#@ template language="C#" tier="2"#>
+
+<#@ assembly name="C:\\Windows\\Microsoft.NET\\Framework\\v2.0.50727\\System.Windows.Forms.dll" #>
+<#@ import namespace="System.Windows.Forms" #>
+<#@ import namespace="System.Data" #>	
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="Varigence.Biml.CoreLowerer.SchemaManagement" #>

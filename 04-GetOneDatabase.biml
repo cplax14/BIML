@@ -1,0 +1,140 @@
+<Biml xmlns="http://schemas.varigence.com/biml.xsd">
+	<#@ include file="i-common-variables.biml" #>
+				<# var ColToRemove = srcDB.Tables.Columns.Where(c => c.Name == "Notes");
+			MessageBox.Show(ColToRemove);
+
+			#>
+	<Packages>		
+		<Package Name="02-Get One Database_biml" ConstraintMode="Parallel" >		
+			<Parameters>
+				<Parameter Name="ETLLoadStartTime" DataType="DateTime">1/1/1900</Parameter>			
+				<Parameter Name="ETLRunID" DataType="Int32">1</Parameter>
+			</Parameters>
+			<Connections>
+				<Connection ConnectionName="<#=stageConn#>" />
+				<Connection ConnectionName="<#=etlConn#>" />
+				<Connection ConnectionName="<#=srcConn#>" />
+
+			</Connections>
+			<Variables>
+				<Variable Name ="ConnString" DataType="String"></Variable>
+				<Variable Name ="DatabaseStartTime" DataType="DateTime">1/1/1900</Variable>
+				<Variable Name ="DBExists" DataType="Int16">1</Variable>
+				<Variable Name ="Result" DataType="Int16">1</Variable>
+				<Variable Name ="DBName" DataType="String"></Variable>
+				<Variable Name ="TableName" DataType="String"></Variable>
+				<Variable Name ="TaskName" DataType="String"></Variable>
+				<#foreach (var table in RootNode.Tables) { #>
+					<Variable Name ="LastLoadedDate<#=table.Name.Replace(" ","_")#>" DataType="DateTime">1/1/1900</Variable>	
+					<Variable Name ="GetLastLoadedQuery<#=table.Name.Replace(" ","_")#>" DataType="String" EvaluateAsExpression="true">"IF EXISTS(
+						SELECT LastLoadedDate FROM LoadDates
+						WHERE StoreName = '&quot;+ @[User::DBName] +&quot;' AND TableName = '<#=table.Name#>')
+						SELECT CASE WHEN LastLoadedDate &lt; '&quot;+ (DT_WSTR, 50)@[$Package::ETLLoadStartTime] +&quot;' 
+						THEN LastLoadedDate ELSE '&quot;+ (DT_WSTR, 50)@[$Package::ETLLoadStartTime] +&quot;' END FROM LoadDates
+						WHERE StoreName = '&quot;+@[User::DBName] +&quot;' AND TableName = '<#=table.Name#>'
+						ELSE
+						 BEGIN
+
+						INSERT INTO LoadDates(TableName, StoreName,LastLoadedDate)
+						VALUES('<#=table.Name#>','&quot;+@[User::DBName] +&quot;','1-1-1900')
+						SELECT '1-1-1900'
+				END"</Variable>	
+					<!--<Variable Name ="InsertForPreExecuteQuery<#=table.Name#>" DataType="String"></Variable>	-->
+					<!--<Variable Name ="SourceSelectQuery<#=table.Name#>" DataType="String"></Variable>	-->
+					<Variable Name ="RowCountExtract<#=table.Name.Replace(" ","_")#>" DataType="Int32">0</Variable>	
+					<Variable Name ="StagingErrorRowCount<#=table.Name.Replace(" ","_")#>" DataType="Int32">0</Variable>	
+					<Variable Name ="UpdateControlDBQuery<#=table.Name.Replace(" ","_")#>" DataType="String" EvaluateAsExpression="true">"
+					UPDATE dbo.LoadDates
+						SET LastLoadedDate = GETDATE()
+						WHERE StoreName = '&quot;+ @[User::DBName] +&quot;' AND TableName = '<#=table.Name#>'
+
+						INSERT INTO ETLDetailStagingRowCountAudit(
+						ETLRunID,DBName,TableName,RowCountNum,LoadDateTime,DatabaseStartTime,ErrorRowCountNum)
+						VALUES(&quot;+ (DT_WSTR, 6) @[$Package::ETLRunID] +&quot;,'&quot;+ @[User::DBName] +&quot;','Clients',&quot;+ 
+						(DT_WSTR, 7) @[User::RowCountExtract<#=table.Name.Replace(" ","_")#>] +&quot;,Getdate(),'&quot;+ (DT_WSTR, 30) @[User::DatabaseStartTime] +&quot;',&quot;+
+						(DT_WSTR,9) @[User::StagingErrorRowCount<#=table.Name.Replace(" ","_")#>] +&quot;)&quot;</Variable>	
+					<!--<Variable Name ="UpdateForPostExecuteQuery<#=table.Name#>" DataType="String"></Variable>	-->
+				<#}#>
+			</Variables>
+			<Tasks>
+				<Container Name="SEQ Staging Tasks" ConstraintMode="Linear">
+					<Tasks>
+						<ExecuteSQL Name="SQL Get Database to Process" ConnectionName="<#=etlConn#>">
+							<DirectInput>EXEC usp_GetDatabase;</DirectInput>
+							<Results>
+								<Result Name="0" VariableName="User.DBName"/>
+								<Result Name="1" VariableName="User.ConnString"/>
+								<Result Name="2" VariableName="User.Result"/>
+							</Results>
+						</ExecuteSQL>
+						<Expression Name ="EXP Log Start of Database" Expression="@[$Package::DatabaseStartTime]= GETDATE()">						
+						</Expression>
+						<Container Name ="SEQ Stage Data">
+							<Tasks>
+								<# foreach (var table in RootNode.Tables) {  #>
+									<Container Name="SEQ Get <#=table.Name#>" ConstraintMode="Linear">
+										<Tasks>
+											<Expression Name="EXP Set Tablename for <#=table.Name#>" Expression="@[User::TableName]=&quot;CLIENTS&quot;">
+											</Expression>
+											<ExecuteSQL Name ="SQL Get Last Loaded Date for <#=table.Name#>" ConnectionName="<#=etlConn#>">
+												<VariableInput VariableName="User.GetLastLoadedQuery<#=table.Name.Replace(" ","_")#>"></VariableInput>
+												<Results>
+													<Result Name="0" VariableName="User.LastLoadedDate<#=table.Name.Replace(" ","_")#>"></Result>
+												</Results>
+											</ExecuteSQL>
+											<Dataflow Name ="DFT Get <#=table.Name#> Table">
+												<Transformations>
+													<OleDbSource Name="OLE Source <#=table.Name#>" ConnectionName="<#=srcConn#>">
+														<DirectInput> SELECT <#=table.GetColumnList(c => c.DataType != System.Data.DbType.Binary && c.DataType != System.Data.DbType.Object)#> FROM [<#=table.Name#>]</DirectInput>
+														<!--<VariableInput VariableName="User.SourceSelectQuery<#=table.Name#>"></VariableInput>-->
+													</OleDbSource>
+													<RowCount Name ="RC Extract" VariableName="User.RowCountExtract<#=table.Name.Replace(" ","_")#>"></RowCount>
+													<OleDbDestination Name="OLE Destination <#=stageSchema#> <#=table.Name#>" ConnectionName="<#=stageConn#>">
+														<ExternalTableOutput Table="<#=stageSchema#>.[<#=table.Name#>]"/>
+														<ErrorHandling ErrorRowDisposition="RedirectRow" TruncationRowDisposition="RedirectRow" />
+													</OleDbDestination>	
+													<RowCount Name ="RC Error" VariableName="User.StagingErrorRowCount<#=table.Name.Replace(" ","_")#>">
+														<InputPath OutputPathName ="OLE Destination <#=stageSchema#> <#=table.Name#>.Error" />
+													</RowCount>
+												<!--	<FlatFileDestination Name="FF Errors <#=table.Name#>" ConnectionName="FF Errors <#=table.Name#>">
+															<InputPath OutputPathName ="RC Error.Output" />
+													</FlatFileDestination>	-->
+												</Transformations>
+											</Dataflow>
+											<ExecuteSQL Name ="SQL Update Control DB <#=table.Name#>" ConnectionName="<#=etlConn#>">
+												<VariableInput VariableName="User.UpdateControlDBQuery<#=table.Name.Replace(" ","_")#>"></VariableInput>
+											</ExecuteSQL>							
+										</Tasks>
+									</Container>
+								<# } #>
+							</Tasks>
+						</Container>
+						<ExecuteSQL Name ="SQL Mark Database as Errored" ConnectionName="<#=etlConn#>">
+							<PrecedenceConstraints>
+								<Inputs>
+									<Input OutputPathName="SEQ Stage Data.Output" EvaluationValue="Failure" />
+								</Inputs>
+							</PrecedenceConstraints>							
+							<DirectInput>UPDATE ETLQueue SET Status = 2 WHERE DBName = ?</DirectInput>
+							<Parameters>
+								<Parameter Name="0" VariableName="User.DBName" DataType="String"/>
+							</Parameters>
+						</ExecuteSQL>
+						<ExecuteSQL Name ="SQL Mark Database as Completed" ConnectionName="<#=etlConn#>">
+							<PrecedenceConstraints>
+								<Inputs>
+									<Input OutputPathName="SEQ Stage Data.Output" />	
+								</Inputs>
+							</PrecedenceConstraints>							
+							<DirectInput>UPDATE ETLQueue SET DatabaseEndTime = GETDATE(),Status = 3 WHERE DBName = ?</DirectInput>
+							<Parameters>
+								<Parameter Name="0" VariableName="User.DBName" DataType="String"/>
+							</Parameters>
+						</ExecuteSQL>
+					</Tasks>
+				</Container>
+			</Tasks>
+      </Package>
+  </Packages>
+</Biml>
+<#@ template language="C#" tier="4"#>

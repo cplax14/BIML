@@ -1,0 +1,12 @@
+<Biml xmlns="http://schemas.varigence.com/biml.xsd">
+	<Connections>
+		<OleDbConnection Name ="SourceDB" ConnectionString="Server=.;Initial Catalog=DemoHealthClub;Provider=SQLNCLI11.1;Integrated Security=SSPI;" CreateInProject="true">
+		</OleDbConnection>
+		<OleDbConnection Name ="CentralStaging" ConnectionString="Server=.;Initial Catalog=CentralStaging;Provider=SQLNCLI11.1;Integrated Security=SSPI;" CreateInProject="true">
+		</OleDbConnection>
+		<OleDbConnection Name ="ETLLog" ConnectionString="Server=.;Initial Catalog=ETLLog;Provider=SQLNCLI11.1;Integrated Security=SSPI;" CreateInProject="true"></OleDbConnection>	
+		<OleDbConnection Name ="DW" ConnectionString="Server=.;Initial Catalog=DW;Provider=SQLNCLI11.1;Integrated Security=SSPI;" CreateInProject="true">
+		</OleDbConnection>
+	</Connections>
+</Biml>
+<#@ template language="C#" tier="1"#>
