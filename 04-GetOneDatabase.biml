@@ -2,7 +2,8 @@
 	<#@ include file="i-common-variables.biml" #>
 				<# var ColToRemove = srcDB.Tables.Columns.Where(c => c.Name == "Notes");
 			MessageBox.Show(ColToRemove);
-
+ 
+ 
 			#>
 	<Packages>		
 		<Package Name="02-Get One Database_biml" ConstraintMode="Parallel" >		
