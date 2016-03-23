@@ -1,15 +1,11 @@
 <Biml xmlns="http://schemas.varigence.com/biml.xsd">
 	<#@ include file="i-common-variables.biml" #>
-				<# var ColToRemove = srcDB.Tables.Columns.Where(c => c.Name == "Notes");
-			MessageBox.Show(ColToRemove);
- 
- 
-			#>
 	<Packages>		
 		<Package Name="02-Get One Database_biml" ConstraintMode="Parallel" >		
 			<Parameters>
 				<Parameter Name="ETLLoadStartTime" DataType="DateTime">1/1/1900</Parameter>			
 				<Parameter Name="ETLRunID" DataType="Int32">1</Parameter>
+				<Parameter Name ="ETLLoadEndTime" DataType="DateTime">1/1/1900</Parameter>
 			</Parameters>
 			<Connections>
 				<Connection ConnectionName="<#=stageConn#>" />
@@ -41,7 +37,7 @@
 						SELECT '1-1-1900'
 				END"</Variable>	
 					<!--<Variable Name ="InsertForPreExecuteQuery<#=table.Name#>" DataType="String"></Variable>	-->
-					<!--<Variable Name ="SourceSelectQuery<#=table.Name#>" DataType="String"></Variable>	-->
+					<Variable Name ="SourceSelectQuery<#=table.Name.Replace(" ","_")#>" DataType="String"></Variable>	
 					<Variable Name ="RowCountExtract<#=table.Name.Replace(" ","_")#>" DataType="Int32">0</Variable>	
 					<Variable Name ="StagingErrorRowCount<#=table.Name.Replace(" ","_")#>" DataType="Int32">0</Variable>	
 					<Variable Name ="UpdateControlDBQuery<#=table.Name.Replace(" ","_")#>" DataType="String" EvaluateAsExpression="true">"
@@ -60,6 +56,18 @@
 			<Tasks>
 				<Container Name="SEQ Staging Tasks" ConstraintMode="Linear">
 					<Tasks>
+						<Container Name ="SEQ Get Source Select Queries">
+							<Tasks>
+								<# foreach (var table in RootNode.Tables) {  #>
+									<ExecuteSQL Name="SQL Get Source SELECT For <#=table.Name#>" ConnectionName="<#=etlConn#>">
+										<DirectInput>SELECT SourceSelectQuery FROM SourceSelectQueries WHERE TableName = '<#=table.Name#>'</DirectInput>
+										<Results>
+											<Result Name="0" VariableName="User.SourceSelectQuery<#=table.Name.Replace(" ","_")#>"/>
+										</Results>
+									</ExecuteSQL>				
+								<# } #>
+							</Tasks>
+						</Container>
 						<ExecuteSQL Name="SQL Get Database to Process" ConnectionName="<#=etlConn#>">
 							<DirectInput>EXEC usp_GetDatabase;</DirectInput>
 							<Results>
@@ -68,7 +76,7 @@
 								<Result Name="2" VariableName="User.Result"/>
 							</Results>
 						</ExecuteSQL>
-						<Expression Name ="EXP Log Start of Database" Expression="@[$Package::DatabaseStartTime]= GETDATE()">						
+						<Expression Name ="EXP Log Start of Database" Expression="@[User::DatabaseStartTime]= GETDATE()">						
 						</Expression>
 						<Container Name ="SEQ Stage Data">
 							<Tasks>
@@ -86,8 +94,8 @@
 											<Dataflow Name ="DFT Get <#=table.Name#> Table">
 												<Transformations>
 													<OleDbSource Name="OLE Source <#=table.Name#>" ConnectionName="<#=srcConn#>">
-														<DirectInput> SELECT <#=table.GetColumnList(c => c.DataType != System.Data.DbType.Binary && c.DataType != System.Data.DbType.Object)#> FROM [<#=table.Name#>]</DirectInput>
-														<!--<VariableInput VariableName="User.SourceSelectQuery<#=table.Name#>"></VariableInput>-->
+														<!--<DirectInput> SELECT <#=table.GetColumnList(c => c.DataType != System.Data.DbType.Binary && c.DataType != System.Data.DbType.Object)#> FROM [<#=table.Name#>]</DirectInput>-->
+														<VariableInput VariableName="User.SourceSelectQuery<#=table.Name.Replace(" ","_")#>"></VariableInput>
 													</OleDbSource>
 													<RowCount Name ="RC Extract" VariableName="User.RowCountExtract<#=table.Name.Replace(" ","_")#>"></RowCount>
 													<OleDbDestination Name="OLE Destination <#=stageSchema#> <#=table.Name#>" ConnectionName="<#=stageConn#>">
