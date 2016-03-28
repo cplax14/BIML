@@ -101,17 +101,18 @@
 											<Dataflow Name ="DFT Get <#=table.Name#> Table">
 												<Transformations>
 													<OleDbSource Name="OLE Source <#=table.Name#>" ConnectionName="<#=srcConn#>">
-														<DirectInput>															
 															<!--<#///=sourceSelectQueries.SourceSelectQuery(c => c.TableName ==  table.Name)#>-->
 															<#DataRow[] filteredrow = sourceSelectQueries.Select("TableName like '%"+table.Name+"%'");#>
 															<!--<#///sourceSelectQueries.Select("TableName like '%"+table.Name+"%'")["SourceSelectQuery"];#>-->
-															<#string query = filteredrow[0].ToString();#>
-															<#MessageBox.Show(query);#>
-															<!--<#///WriteLine(query);#>-->
-															<#=query#>
+															<#string query = filteredrow[0][1].ToString();#>
+															<#///MessageBox.Show(query);
+																#>
+															<!--<#///WriteLine(query);#>-->															
 															<!--<#///=sourceSelectQueries.Rows.Find(table.Name)#>-->
-														</DirectInput>
-														<!--<DirectInput> SELECT <#=table.GetColumnList(c => c.DataType != System.Data.DbType.Binary && c.DataType != System.Data.DbType.Object)#> FROM [<#=table.Name#>]</DirectInput>-->
+																<#///=query#>
+																<DirectInput><#=query#></DirectInput>
+														<!--<DirectInput>select studios.studioid,[PAYMENT DATA].[PmtRefNo], [PAYMENT DATA].[ClientID], [PAYMENT DATA].[OLDCLientID], [PAYMENT DATA].[ProductID], [PAYMENT DATA].[PaymentDate], [PAYMENT DATA].[ActiveDate], [PAYMENT DATA].[TypePurch], [PAYMENT DATA].[PaymentAmount], [PAYMENT DATA].[PaymentAmountB], [PAYMENT DATA].[PaymentMethod], [PAYMENT DATA].[PaymentMethodB], [PAYMENT DATA].[ClientCredit], [PAYMENT DATA].[CheckNumber], [PAYMENT DATA].[CardholdersName], [PAYMENT DATA].[CardholderB], [PAYMENT DATA].[CheckNoB], [PAYMENT DATA].[ExpDate], [PAYMENT DATA].[Remaining], [PAYMENT DATA].[Location], [PAYMENT DATA].[SoldBy], [PAYMENT DATA].[ReceiptNo], [PAYMENT DATA].[Current Series], [PAYMENT DATA].[Used-up], [PAYMENT DATA].[Expired], [PAYMENT DATA].[Duration], [PAYMENT DATA].[NumClasses], [PAYMENT DATA].[Count], [PAYMENT DATA].[Type], [PAYMENT DATA].[TypeGroup], [PAYMENT DATA].[Value], [PAYMENT DATA].[Returned], [PAYMENT DATA].[GoodOrphan], [PAYMENT DATA].[Closed], [PAYMENT DATA].[Sent2Rem], [PAYMENT DATA].[Sent1Rem], [PAYMENT DATA].[Sent0Rem], [PAYMENT DATA].[Sent14Days], [PAYMENT DATA].[Sent7Days], [PAYMENT DATA].[Sent0Days], [PAYMENT DATA].[GiftCardNumber], [PAYMENT DATA].[SaleID], [PAYMENT DATA].[ClassID], [PAYMENT DATA].[Sent2RemDate], [PAYMENT DATA].[Sent1RemDate], [PAYMENT DATA].[Sent0RemDate], [PAYMENT DATA].[Sent14DaysDate], [PAYMENT DATA].[Sent7DaysDate], [PAYMENT DATA].[Sent0DaysDate], [PAYMENT DATA].[RealRemaining], [PAYMENT DATA].[DurationUnit], [PAYMENT DATA].[MaxSchPerWeek], [PAYMENT DATA].[SchBackToBackDays], [PAYMENT DATA].[CloseID], [PAYMENT DATA].[ClientContractID], [PAYMENT DATA].[DepositReleaseDate], [PAYMENT DATA].[DepositReleasedBy], [PAYMENT DATA].[GiftCardExtID], [PAYMENT DATA].[OldGiftCardNumber], [PAYMENT DATA].[SchOpenDOM], [PAYMENT DATA].[SchOnePerDay], [PAYMENT DATA].[TerminationClientContractID], [PAYMENT DATA].[oldexpdate], [PAYMENT DATA].[SchPerDay], [PAYMENT DATA].[SourceID], [PAYMENT DATA].[Priority], [PAYMENT DATA].[ActDateOnFirstVisit] FROM [PAYMENT DATA] CROSS JOIN Studios where (CreatedDateTimeUTC >= ? and CreatedDateTimeUTC < ?) 	or  (ModifiedDateTimeUTC >= ? and ModifiedDateTimeUTC < ?);</DirectInput>-->
+														<!--<DirectInput> SELECT <#///=table.GetColumnList(c => c.DataType != System.Data.DbType.Binary && c.DataType != System.Data.DbType.Object)#> FROM [<#=table.Name#>]</DirectInput>-->
 														<!--<VariableInput VariableName="User.SourceSelectQuery<#=table.Name.Replace(" ","_")#>"></VariableInput>-->
 														<Parameters>
 															<Parameter Name="0" VariableName="User.LastLoadedDate<#=table.Name.Replace(" ","_")#>"  />
