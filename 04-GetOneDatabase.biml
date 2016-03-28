@@ -4,10 +4,6 @@
 			string sql = "SELECT TableName,SourceSelectQuery from SourceSelectQueries";
 			DataTable sourceSelectQueries = ExternalDataAccess.GetDataTable(ConnStr,sql);
 			
-			DataRow[] foundrows;
-		
-			///dtSet = new DataSet("Queries");
-			///dtSet.Tables.Add(sourceSelectQueries);
 	#>
 	<Packages>		
 		<Package Name="02-Get One Database_biml" ConstraintMode="Parallel" >		
@@ -105,14 +101,15 @@
 											<Dataflow Name ="DFT Get <#=table.Name#> Table">
 												<Transformations>
 													<OleDbSource Name="OLE Source <#=table.Name#>" ConnectionName="<#=srcConn#>">
-														<DirectInput>
-															
+														<DirectInput>															
 															<!--<#///=sourceSelectQueries.SourceSelectQuery(c => c.TableName ==  table.Name)#>-->
 															<#DataRow[] filteredrow = sourceSelectQueries.Select("TableName like '%"+table.Name+"%'");#>
 															<!--<#///sourceSelectQueries.Select("TableName like '%"+table.Name+"%'")["SourceSelectQuery"];#>-->
-															<#string query = filteredrow[0].ToString();
-																return query;#>
-															<#///=sourceSelectQueries.Rows.Find(table.Name)#>-->
+															<#string query = filteredrow[0].ToString();#>
+															<#MessageBox.Show(query);#>
+															<!--<#///WriteLine(query);#>-->
+															<#=query#>
+															<!--<#///=sourceSelectQueries.Rows.Find(table.Name)#>-->
 														</DirectInput>
 														<!--<DirectInput> SELECT <#=table.GetColumnList(c => c.DataType != System.Data.DbType.Binary && c.DataType != System.Data.DbType.Object)#> FROM [<#=table.Name#>]</DirectInput>-->
 														<!--<VariableInput VariableName="User.SourceSelectQuery<#=table.Name.Replace(" ","_")#>"></VariableInput>-->
@@ -175,4 +172,8 @@
   </Packages>
 </Biml>
 <#@ template language="C#" tier="4"#>
-<#@ import namespace="System.Data" #>
+<#@ assembly name="C:\\Windows\\Microsoft.NET\\Framework\\v2.0.50727\\System.Windows.Forms.dll" #>
+<#@ import namespace="System.Windows.Forms" #>
+<#@ import namespace="System.Data" #>	
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="Varigence.Biml.CoreLowerer.SchemaManagement" #>
