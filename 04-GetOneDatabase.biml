@@ -1,5 +1,14 @@
 <Biml xmlns="http://schemas.varigence.com/biml.xsd">
 	<#@ include file="i-common-variables.biml" #>
+	<#		string ConnStr = "Provider=SQLNCLI11.1;Server=.;Initial Catalog=ETLLog;Integrated Security=SSPI;";
+			string sql = "SELECT TableName,SourceSelectQuery from SourceSelectQueries";
+			DataTable sourceSelectQueries = ExternalDataAccess.GetDataTable(ConnStr,sql);
+			
+			DataRow[] foundrows;
+		
+			///dtSet = new DataSet("Queries");
+			///dtSet.Tables.Add(sourceSelectQueries);
+	#>
 	<Packages>		
 		<Package Name="02-Get One Database_biml" ConstraintMode="Parallel" >		
 			<Parameters>
@@ -57,7 +66,8 @@
 			<Tasks>
 				<Container Name="SEQ Staging Tasks" ConstraintMode="Linear">
 					<Tasks>
-						<Container Name ="SEQ Get Source Select Queries">
+					<!--	Commenting out the section where we create the Execute SQL tasks to get the source select queries
+					<Container Name ="SEQ Get Source Select Queries">
 							<Tasks>
 								<# foreach (var table in RootNode.Tables) {  #>
 									<ExecuteSQL Name="SQL Get Source SELECT For <#=table.Name#>" ConnectionName="<#=etlConn#>">
@@ -68,7 +78,7 @@
 									</ExecuteSQL>				
 								<# } #>
 							</Tasks>
-						</Container>
+						</Container>-->
 						<ExecuteSQL Name="SQL Get Database to Process" ConnectionName="<#=etlConn#>">
 							<DirectInput>EXEC usp_GetDatabase;</DirectInput>
 							<Results>
@@ -95,8 +105,17 @@
 											<Dataflow Name ="DFT Get <#=table.Name#> Table">
 												<Transformations>
 													<OleDbSource Name="OLE Source <#=table.Name#>" ConnectionName="<#=srcConn#>">
+														<DirectInput>
+															
+															<!--<#///=sourceSelectQueries.SourceSelectQuery(c => c.TableName ==  table.Name)#>-->
+															<#DataRow[] filteredrow = sourceSelectQueries.Select("TableName like '%"+table.Name+"%'");#>
+															<!--<#///sourceSelectQueries.Select("TableName like '%"+table.Name+"%'")["SourceSelectQuery"];#>-->
+															<#string query = filteredrow[0].ToString();
+																return query;#>
+															<#///=sourceSelectQueries.Rows.Find(table.Name)#>-->
+														</DirectInput>
 														<!--<DirectInput> SELECT <#=table.GetColumnList(c => c.DataType != System.Data.DbType.Binary && c.DataType != System.Data.DbType.Object)#> FROM [<#=table.Name#>]</DirectInput>-->
-														<VariableInput VariableName="User.SourceSelectQuery<#=table.Name.Replace(" ","_")#>"></VariableInput>
+														<!--<VariableInput VariableName="User.SourceSelectQuery<#=table.Name.Replace(" ","_")#>"></VariableInput>-->
 														<Parameters>
 															<Parameter Name="0" VariableName="User.LastLoadedDate<#=table.Name.Replace(" ","_")#>"  />
 															<Parameter Name="1" VariableName="User.ETLLoadStartTime"  />
@@ -156,3 +175,4 @@
   </Packages>
 </Biml>
 <#@ template language="C#" tier="4"#>
+<#@ import namespace="System.Data" #>
